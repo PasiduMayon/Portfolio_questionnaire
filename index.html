@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Website Questionnaire</title>
+<meta name="description" content="Tell us about you so we can build a portfolio website that looks and feels like you.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#172033; --navy:#1B2540; --navy2:#26335A; --teal:#0E9F9A; --teal-d:#0A7F7B;
+  --mist:#EEF3F5; --paper:#F6F8FA; --line:#D3DCE3; --muted:#5B6573; --warn:#B4412E; --white:#fff;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+
+.shell{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
+
+/* ---------- rail ---------- */
+.rail{background:var(--navy);color:#fff;padding:36px 28px;position:sticky;top:0;height:100vh;overflow:auto}
+.rail h1{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.15;margin:0 0 8px}
+.rail .sub{color:#B9C4DD;font-size:14.5px;margin:0 0 28px}
+.steps{list-style:none;margin:0;padding:0;position:relative}
+.steps li{position:relative;padding:0 0 0 38px}
+.steps li::before{content:"";position:absolute;left:11px;top:26px;bottom:-4px;width:2px;background:var(--navy2)}
+.steps li:last-child::before{display:none}
+.steps li.done::before{background:var(--teal)}
+.steps button{all:unset;display:block;cursor:pointer;padding:5px 0 17px;font-size:14.5px;color:#B9C4DD;width:100%}
+.steps button[disabled]{cursor:default;opacity:.6}
+.steps .dot{position:absolute;left:0;top:3px;width:24px;height:24px;border-radius:50%;background:var(--navy2);color:#B9C4DD;font-size:12px;font-weight:700;display:grid;place-items:center}
+.steps li.done .dot{background:var(--teal);color:#fff}
+.steps li.current .dot{background:#fff;color:var(--navy);box-shadow:0 0 0 4px rgba(14,159,154,.55)}
+.steps li.current button{color:#fff;font-weight:700}
+.steps li.done button{color:#E3EAF7}
+.reset{all:unset;cursor:pointer;margin-top:10px;font-size:13px;color:#9FB0D3;text-decoration:underline}
+
+/* ---------- main ---------- */
+.main{padding:48px clamp(20px,5vw,72px) 72px;max-width:900px}
+.mobilebar{display:none}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:clamp(22px,4vw,40px)}
+.card h2{font-family:var(--display);font-weight:700;font-size:clamp(26px,4vw,34px);line-height:1.15;margin:0 0 6px;color:var(--navy)}
+.card .lead{margin:0 0 26px;color:var(--muted);max-width:60ch}
+.field{margin:0 0 30px;border:0;padding:0;min-width:0}
+.field legend,.field>label.q{display:block;font-weight:700;font-size:17px;line-height:1.35;color:var(--navy);padding:0;margin:0 0 4px;max-width:62ch}
+.qn{color:var(--teal-d);margin-right:8px}
+.req{color:var(--warn);font-weight:700;margin-left:4px}
+.hint{display:block;color:var(--muted);font-size:14px;margin:0 0 10px;max-width:62ch}
+.field .gap{height:8px}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea{
+  width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px;transition:border-color .15s,box-shadow .15s}
+textarea{min-height:112px;resize:vertical}
+input[type=text]:hover,textarea:hover{border-color:#aab7c2}
+input:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,159,154,.2)}
+.opts{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opt span{display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--line);border-radius:999px;padding:9px 16px 9px 12px;background:#fff;font-size:15px;transition:background .15s,border-color .15s}
+.opt span::before{content:"";width:16px;height:16px;border:2px solid #9AA7B4;border-radius:5px;flex:none;background:#fff}
+.opt.radio span::before{border-radius:50%}
+.opt input:checked+span{background:var(--mist);border-color:var(--teal);font-weight:600}
+.opt input:checked+span::before{background:var(--teal);border-color:var(--teal);box-shadow:inset 0 0 0 3px #fff}
+.opt input:focus-visible+span{outline:3px solid var(--teal);outline-offset:2px}
+.other{margin-top:12px;max-width:420px}
+.note{margin-top:12px}
+.note label{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
+.err{color:var(--warn);font-size:14px;margin-top:8px;font-weight:600}
+.err:empty{display:none}
+.invalid{border-color:var(--warn)!important}
+
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px;padding-top:24px;border-top:1px solid var(--line)}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:13px 26px;font-weight:700;font-size:16px;text-align:center}
+.btn.primary{background:var(--teal);color:#fff}
+.btn.primary:hover{background:var(--teal-d)}
+.btn.ghost{border:1.5px solid var(--line);color:var(--navy);background:#fff}
+.btn.ghost:hover{border-color:var(--navy)}
+.btn.wa{background:#1FA855;color:#fff}
+.btn.wa:hover{background:#188A45}
+.btn[disabled]{opacity:.55;cursor:wait}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.hide{visibility:hidden}
+
+/* ---------- done ---------- */
+.done-actions{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0 8px}
+.status{border-radius:10px;padding:14px 16px;margin:18px 0 0;font-size:15px}
+.status.ok{background:#E6F6EE;border:1px solid #9AD3B2;color:#14532D}
+.status.bad{background:#FCEDEA;border:1px solid #E7B1A7;color:#7A271A}
+.status a{color:inherit;font-weight:700}
+
+/* ---------- print summary ---------- */
+#print{display:none}
+@media print{
+  body{background:#fff}
+  .shell,.mobilebar{display:none!important}
+  #print{display:block;font-family:Arial,Helvetica,sans-serif;color:#111;font-size:11pt;line-height:1.4}
+  #print h1{font-size:20pt;margin:0 0 2pt;color:#1B2540}
+  #print .meta{color:#555;margin:0 0 14pt}
+  #print h2{font-size:12.5pt;background:#1B2540;color:#fff;padding:5pt 8pt;margin:16pt 0 8pt;break-after:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print .qa{margin:0 0 9pt;break-inside:avoid}
+  #print .qa b{display:block;color:#1B2540}
+  #print .qa div{white-space:pre-wrap;border-bottom:1px solid #ccc;padding:2pt 0 4pt}
+  #print .empty{color:#888;font-style:italic}
+}
+
+/* ---------- small screens ---------- */
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .rail{display:none}
+  .mobilebar{display:block;position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;padding:12px 20px 14px}
+  .mobilebar .t{display:flex;justify-content:space-between;font-size:14px;gap:12px}
+  .mobilebar .t b{font-family:var(--display);font-size:16px}
+  .bar{height:6px;background:var(--navy2);border-radius:99px;margin-top:9px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+  .main{padding:22px 16px 56px}
+  .btn{padding:13px 20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="mobilebar" aria-hidden="false">
+  <div class="t"><b id="mTitle">Portfolio questionnaire</b><span id="mCount"></span></div>
+  <div class="bar"><i id="mBar"></i></div>
+</div>
+
+<div class="shell">
+  <aside class="rail">
+    <h1>Portfolio website questionnaire</h1>
+    <p class="sub">Tell us about you, so we can build a website that looks and feels like you. It takes about 15 minutes.</p>
+    <ol class="steps" id="steps"></ol>
+    <button class="reset" id="resetBtn" type="button">Clear my answers and start again</button>
+  </aside>
+
+  <main class="main" id="main">
+    <form class="card" id="card" novalidate autocomplete="on"></form>
+  </main>
+</div>
+
+<div id="print" aria-hidden="true"></div>
+
+<script>
+/* ====== EDIT THESE ====== */
+var CONFIG = {
+  studio: "Nova Creative Studio",           // shown on the PDF summary
+  email: "novacreativestudio2026@gmail.com", // answers are sent here
+  whatsapp: "94758997750"                     // 0758997750 in international format (Sri Lanka, no + or 0)
+};
+/* ======================== */
+
+var YEARS = ["Less than 1 year","1 - 3 years","3 - 5 years","5 - 10 years","More than 10 years"];
+
+/* type: text | area | checks | radio | email | tel | url ; other: add an "Other" box ; note: follow-up box label */
+var SECTIONS = [
+ {title:"Your details", short:"Your details", lead:"So we know who to reply to.", unnumbered:true, fields:[
+  {id:"name", label:"Your full name", type:"text", required:true, auto:"name"},
+  {id:"phone", label:"Phone / WhatsApp number", type:"tel", auto:"tel", hint:"Add the country code, for example +94 77 123 4567."},
+  {id:"email", label:"Email address", type:"email", auto:"email", hint:"We need at least a phone number or an email so we can reach you."}
+ ]},
+ {title:"About you", short:"About you", lead:"A few basics about you and your work.", fields:[
+  {id:"fullname", label:"Your full name (as you want it shown on the website)", type:"text"},
+  {id:"job", label:"What is your profession or job title?", type:"text"},
+  {id:"place", label:"Where do you live or work? (city, country)", type:"text"},
+  {id:"about", label:"Write 3-5 sentences about yourself. Who are you and what do you do?", type:"area"},
+  {id:"years", label:"How many years of experience do you have?", type:"radio", options:YEARS}
+ ]},
+ {title:"Your goal", short:"Your goal", lead:"What should this website do for you?", fields:[
+  {id:"why", label:"Why do you want this website?", type:"checks", options:["Get more clients","Find a job","Show my work","Build my name","Sell products / services"], other:true},
+  {id:"who", label:"Who should visit your website?", type:"checks", options:["Customers","Employers","Companies / brands","General public"], other:true},
+  {id:"action", label:"What should visitors do after seeing it?", type:"checks", options:["Call me","Message me","Hire me","Buy from me","Follow me"], other:true}
+ ]},
+ {title:"Your services or skills", short:"Services & skills", lead:"What you offer and what makes you special.", fields:[
+  {id:"services", label:"List the services or skills you offer.", type:"area"},
+  {id:"strength", label:"Which one is your main strength?", type:"text"},
+  {id:"different", label:"What makes you different from others in your field?", type:"area"},
+  {id:"prices", label:"Do you have prices or packages? Do you want to show them on the website?", type:"radio", options:["Yes, show prices","No, hide prices","Show \"Contact for price\""], note:"If you want to show them, write your prices or packages here (optional)."}
+ ]},
+ {title:"Your work", short:"Your work", lead:"The projects you are proud of.", fields:[
+  {id:"projects", label:"Which projects or works do you want to show?", type:"area", hint:"Choose your 6-12 best works and list them here."},
+  {id:"projnotes", label:"For each work, write a short note: what it is, who it was for, and the result.", type:"area"},
+  {id:"media", label:"Do you have photos, videos or links for these works?", type:"checks", options:["Photos","Videos","Links","I need help to collect them"], hint:"Please send them in high quality."},
+  {id:"reviews", label:"Do you have reviews or testimonials from clients?", type:"radio", options:["Yes, I will send them","No, I do not have any"]},
+  {id:"awards", label:"Do you have awards, certificates or education to show?", type:"area"},
+  {id:"brands", label:"Have you worked with any well-known clients or brands?", type:"area"}
+ ]},
+ {title:"Design preferences", short:"Design", lead:"How should your website look and feel?", fields:[
+  {id:"style", label:"Which style do you like?", type:"checks", options:["Modern","Minimal","Bold","Creative","Professional","Elegant","Playful"], other:true},
+  {id:"colours", label:"Which colours do you like? Which colours do you NOT like?", type:"area", hint:"Write the colour names or colour codes."},
+  {id:"logo", label:"Do you have a logo or brand colours?", type:"radio", options:["Yes, I will send them","No, please design for me"]},
+  {id:"mode", label:"Do you prefer a dark or light look?", type:"radio", options:["Dark","Light","Both (switch option)","No preference"]},
+  {id:"likesites", label:"Share 2-3 websites you like. What do you like about them?", type:"area"},
+  {id:"dislikes", label:"Are there any websites or styles you do NOT like?", type:"area"}
+ ]},
+ {title:"Pages and features", short:"Pages & features", lead:"What should be on your website?", fields:[
+  {id:"pages", label:"Which pages do you need?", type:"checks", options:["Home","About","Services","Portfolio","Testimonials","Blog","Contact"], other:true},
+  {id:"features", label:"Do you want any of these features?", type:"checks", options:["Contact form","WhatsApp button","Photo gallery","Video section","Download CV","Social media feed","Map","More than one language"], other:true},
+  {id:"feel", label:"How should the website feel?", type:"radio", options:["Simple and fast","Animations and effects","A mix of both"]}
+ ]},
+ {title:"Contact and social media", short:"Contact & social", lead:"How people will reach you from the website.", fields:[
+  {id:"contactshow", label:"Which email, phone number and WhatsApp number should be shown on the website?", type:"area"},
+  {id:"social", label:"Share your social media links.", type:"area", hint:"Instagram, Facebook, LinkedIn, YouTube, TikTok, Behance, GitHub, others."},
+  {id:"address", label:"Do you want to show your full address?", type:"radio", options:["Full address","Only my city","No address"]}
+ ]},
+ {title:"Domain and technical", short:"Domain & technical", lead:"A few technical things. Choose \"Please help me\" if you are not sure.", fields:[
+  {id:"domain", label:"Do you already have a domain name (like yourname.com)?", type:"radio", options:["Yes","No, please help me"], note:"If yes, or if you want a new one, write the name here."},
+  {id:"bizmail", label:"Do you have a business email address?", type:"radio", options:["Yes","No, I need one"]},
+  {id:"oldsite", label:"Do you have an old website? Please write the link.", type:"url"},
+  {id:"seo", label:"Do you want help so people can find you on Google (SEO)?", type:"radio", options:["Yes","No"], note:"What words should people search to find you?"}
+ ]},
+ {title:"Final details", short:"Final details", lead:"Almost done. Last few questions.", fields:[
+  {id:"deadline", label:"What is your deadline?", type:"text"},
+  {id:"approver", label:"Who will send us the content, and who will approve the final work?", type:"area"},
+  {id:"updates", label:"Do you want us to update the website later?", type:"radio", options:["Every month","When needed","Never"]},
+  {id:"extra", label:"Is there anything else we should know?", type:"area"},
+  {id:"folder", label:"Link to your shared folder with photos, logos and files", type:"url", hint:"Upload your files to Google Drive (or similar), set sharing to \"Anyone with the link\", and paste the link here."}
+ ]}
+];
+
+/* ---- number the questions ---- */
+(function(){var n=0;SECTIONS.forEach(function(s){s.fields.forEach(function(f){if(!s.unnumbered){f.n=++n}})})})();
+
+var STORE="portfolio-questionnaire-v1";
+var state={step:0,max:0,a:{}};
+var submitted=false, lastStatus=null;
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(state))}catch(e){}}
+function load(){try{var r=localStorage.getItem(STORE);if(r){var d=JSON.parse(r);if(d&&d.a){state=d;state.step=Math.min(state.step||0,SECTIONS.length-1)}}}catch(e){}}
+function clearStore(){try{localStorage.removeItem(STORE)}catch(e){}}
+
+/* ---- rail ---- */
+function renderRail(){
+  var h="";
+  SECTIONS.forEach(function(s,i){
+    var cls=i===state.step?"current":(i<state.step||i<state.max&&i!==state.step?"done":"");
+    if(i<state.step)cls="done";
+    var dis=i>state.max?" disabled":"";
+    h+='<li class="'+cls+'"><span class="dot" aria-hidden="true">'+(cls==="done"?"&#10003;":(i+1))+'</span><button type="button" data-go="'+i+'"'+dis+(i===state.step?' aria-current="step"':'')+'>'+esc(s.short)+'</button></li>';
+  });
+  document.getElementById("steps").innerHTML=h;
+  var total=SECTIONS.length;
+  document.getElementById("mTitle").textContent=SECTIONS[state.step].short;
+  document.getElementById("mCount").textContent="Step "+(state.step+1)+" of "+total;
+  document.getElementById("mBar").style.width=((state.step+1)/total*100)+"%";
+}
+
+/* ---- field markup ---- */
+function fieldHTML(f){
+  var id="f_"+f.id, v=state.a[f.id], lab=(f.n?'<span class="qn">'+f.n+'.</span>':'')+esc(f.label)+(f.required?'<span class="req" aria-hidden="true">*</span>':'');
+  var hint=f.hint?'<span class="hint" id="'+id+'_h">'+esc(f.hint)+'</span>':'';
+  var d=f.hint?' aria-describedby="'+id+'_h"':'';
+  var h='';
+  if(f.type==="checks"||f.type==="radio"){
+    var sel=f.type==="checks"?(Array.isArray(v)?v:[]):v;
+    h+='<fieldset class="field" data-f="'+f.id+'"><legend>'+lab+'</legend>'+hint+'<div class="opts">';
+    f.options.forEach(function(o,i){
+      var on=f.type==="checks"?sel.indexOf(o)>-1:sel===o;
+      h+='<label class="opt '+(f.type==="radio"?"radio":"")+'"><input type="'+(f.type==="radio"?"radio":"checkbox")+'" name="'+f.id+'" value="'+esc(o)+'"'+(on?" checked":"")+'><span>'+esc(o)+'</span></label>';
+    });
+    h+='</div>';
+    if(f.other){h+='<div class="other"><input type="text" data-other="'+f.id+'" placeholder="Other (write here)" aria-label="Other: '+esc(f.label)+'" value="'+esc(state.a[f.id+"_other"]||"")+'"></div>'}
+    if(f.note){h+='<div class="note"><label for="'+id+'_note">'+esc(f.note)+'</label><textarea id="'+id+'_note" data-note="'+f.id+'" rows="2">'+esc(state.a[f.id+"_note"]||"")+'</textarea></div>'}
+    h+='<div class="err" id="'+id+'_e" role="alert"></div></fieldset>';
+    return h;
+  }
+  h+='<div class="field" data-f="'+f.id+'"><label class="q" for="'+id+'">'+lab+'</label>'+hint;
+  if(f.type==="area"){h+='<textarea id="'+id+'" data-id="'+f.id+'"'+d+'>'+esc(v||"")+'</textarea>'}
+  else{
+    var t=f.type==="text"?"text":f.type;
+    h+='<input id="'+id+'" data-id="'+f.id+'" type="'+t+'" value="'+esc(v||"")+'"'+(f.auto?' autocomplete="'+f.auto+'"':'')+(t==="url"?' placeholder="https://"':'')+d+(f.required?' aria-required="true"':'')+'>';
+  }
+  h+='<div class="err" id="'+id+'_e" role="alert"></div></div>';
+  return h;
+}
+
+function renderStep(){
+  var s=SECTIONS[state.step], last=state.step===SECTIONS.length-1;
+  var h='<h2 tabindex="-1" id="stepTitle">'+esc(s.title)+'</h2><p class="lead">'+esc(s.lead)+'</p>';
+  s.fields.forEach(function(f){h+=fieldHTML(f)});
+  h+='<div class="nav">'+
+     '<button type="button" class="btn ghost'+(state.step===0?" hide":"")+'" id="backBtn"'+(state.step===0?' tabindex="-1" aria-hidden="true"':'')+'>Back</button>'+
+     (last?'<button type="submit" class="btn primary" id="sendBtn">Send my answers</button>':'<button type="submit" class="btn primary" id="nextBtn">Next</button>')+
+     '</div><div id="formStatus"></div>';
+  document.getElementById("card").innerHTML=h;
+  renderRail();
+}
+
+function go(i,focus){
+  state.step=i; if(i>state.max)state.max=i; save(); renderStep();
+  if(focus!==false){window.scrollTo({top:0,behavior:"auto"});var t=document.getElementById("stepTitle");if(t)t.focus({preventScroll:true})}
+}
+
+/* ---- events ---- */
+var card=document.getElementById("card");
+card.addEventListener("input",function(e){
+  var t=e.target;
+  if(t.dataset.id){state.a[t.dataset.id]=t.value}
+  else if(t.dataset.other){state.a[t.dataset.other+"_other"]=t.value}
+  else if(t.dataset.note){state.a[t.dataset.note+"_note"]=t.value}
+  else return;
+  if(t.classList.contains("invalid")){t.classList.remove("invalid");var er=document.getElementById("f_"+(t.dataset.id)+"_e");if(er)er.textContent=""}
+  save();
+});
+card.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.type==="checkbox"){
+    var boxes=card.querySelectorAll('input[name="'+t.name+'"]:checked'),arr=[];
+    boxes.forEach(function(b){arr.push(b.value)});state.a[t.name]=arr;save();
+  }else if(t.type==="radio"){state.a[t.name]=t.value;save()}
+});
+card.addEventListener("click",function(e){
+  if(e.target.id==="backBtn"){go(state.step-1)}
+});
+card.addEventListener("submit",function(e){
+  e.preventDefault();
+  if(submitted)return;
+  if(state.step===0&&!validateStep0())return;
+  if(state.step<SECTIONS.length-1){go(state.step+1)}
+  else{if(validateStep0(true)){send()}else{go(0)}}
+});
+document.getElementById("steps").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-go]");if(!b||b.disabled)return;
+  if(state.step===0&&!validateStep0())return;
+  if(submitted)return; go(+b.dataset.go);
+});
+document.getElementById("resetBtn").addEventListener("click",function(){
+  if(confirm("Clear all your answers and start again?")){clearStore();state={step:0,max:0,a:{}};submitted=false;renderStep()}
+});
+
+function validEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)}
+function validateStep0(fromEnd){
+  var name=(state.a.name||"").trim(), phone=(state.a.phone||"").trim(), mail=(state.a.email||"").trim(), ok=true;
+  function bad(id,msg){
+    var el=document.getElementById("f_"+id),er=document.getElementById("f_"+id+"_e");
+    if(el){el.classList.add("invalid");if(er)er.textContent=msg}ok=false;
+  }
+  if(!name)bad("name","Please write your name.");
+  if(!phone&&!mail){bad("phone","Please add a phone number or an email address.");bad("email","Please add a phone number or an email address.")}
+  else if(mail&&!validEmail(mail))bad("email","This email address does not look right. Please check it.");
+  if(!ok){var first=card.querySelector(".invalid");if(first)first.focus()}
+  return ok;
+}
+
+/* ---- collect answers ---- */
+function valueOf(f){
+  var v=state.a[f.id],parts=[];
+  if(f.type==="checks"){if(Array.isArray(v))parts=parts.concat(v)}
+  else if(v&&String(v).trim())parts.push(String(v).trim());
+  var oth=(state.a[f.id+"_other"]||"").trim();
+  if(oth)parts.push("Other: "+oth);
+  return parts.join(", ");
+}
+function collect(){
+  var out=[];
+  SECTIONS.forEach(function(s){
+    var sec={title:s.title,items:[]};
+    s.fields.forEach(function(f){
+      sec.items.push({key:(f.n?"Q"+(f.n<10?"0":"")+f.n+". ":"")+f.label,value:valueOf(f)});
+      if(f.note){sec.items.push({key:(f.n?"Q"+(f.n<10?"0":"")+f.n+" details: ":"Details: ")+f.note,value:(state.a[f.id+"_note"]||"").trim()})}
+    });
+    out.push(sec);
+  });
+  return out;
+}
+
+function plainText(data){
+  var t="Portfolio website questionnaire\n"+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"\n";
+  data.forEach(function(s){
+    t+="\n== "+s.title.toUpperCase()+" ==\n";
+    s.items.forEach(function(i){t+="\n"+i.key+"\n"+(i.value||"-")+"\n"});
+  });
+  return t;
+}
+
+/* ---- send ---- */
+function send(){
+  var btn=document.getElementById("sendBtn"),status=document.getElementById("formStatus");
+  btn.disabled=true;btn.textContent="Sending...";status.innerHTML="";
+  var data=collect(), name=(state.a.name||"").trim(), mail=(state.a.email||"").trim();
+  var payload={
+    "_subject":"New portfolio questionnaire from "+name,
+    "_template":"table",
+    "_captcha":"false",
+    "_honey":"",
+    "Client name":name,
+    "Client phone / WhatsApp":(state.a.phone||"").trim()||"-",
+    "Client email":mail||"-"
+  };
+  if(mail&&validEmail(mail))payload["_replyto"]=mail;
+  data.forEach(function(s,si){
+    if(si===0)return;
+    s.items.forEach(function(i){payload[i.key]=i.value||"Not answered"});
+  });
+  fetch("https://formsubmit.co/ajax/"+encodeURIComponent(CONFIG.email),{
+    method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)
+  }).then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
+   .then(function(res){
+     if(res.ok&&(res.j.success===true||res.j.success==="true")){finish(true)}else{throw new Error((res.j&&res.j.message)||"Failed")}
+   }).catch(function(){
+     btn.disabled=false;btn.textContent="Send my answers";
+     status.innerHTML='<div class="status bad"><b>We could not send your answers.</b> Please check your internet and try again. Your answers are saved on this device. You can also send them on WhatsApp or by email now:<br><br>'+
+       '<a href="'+waLink(data)+'" target="_blank" rel="noopener">Send on WhatsApp</a> &nbsp;|&nbsp; <a href="'+mailLink(data)+'">Send by email</a></div>';
+   });
+}
+
+function waLink(data){
+  var t="Hello! I filled the portfolio website questionnaire.\n\n"+plainText(data);
+  if(t.length>1600)t=t.slice(0,1580)+"...\n(Full answers were sent by email.)";
+  return "https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent(t);
+}
+function mailLink(data){
+  var body=plainText(data);if(body.length>1800)body=body.slice(0,1780)+"...";
+  return "mailto:"+CONFIG.email+"?subject="+encodeURIComponent("Portfolio questionnaire from "+(state.a.name||""))+"&body="+encodeURIComponent(body);
+}
+
+function finish(ok){
+  submitted=true;clearStore();
+  var data=collect();
+  document.getElementById("print").innerHTML=printHTML(data);
+  var name=esc((state.a.name||"").split(" ")[0]||"");
+  document.getElementById("card").innerHTML=
+   '<h2 tabindex="-1" id="stepTitle">Thank you'+(name?", "+name:"")+'!</h2>'+
+   '<p class="lead">We got your answers by email. We will read them and contact you soon.</p>'+
+   '<div class="status ok"><b>Sent.</b> A neat copy of your answers is now in our inbox.</div>'+
+   '<p style="margin:22px 0 0;max-width:60ch">Want to be faster? Send us a message on WhatsApp too, and save a PDF copy for yourself.</p>'+
+   '<div class="done-actions">'+
+     '<a class="btn wa" href="'+waLink(data)+'" target="_blank" rel="noopener">Message us on WhatsApp</a>'+
+     '<button type="button" class="btn ghost" id="pdfBtn">Save my answers as PDF</button>'+
+   '</div>'+
+   '<p class="hint" style="margin-top:14px">In the print window, choose "Save as PDF". Please also send your photos, logos and files to us by WhatsApp if you did not add a folder link.</p>';
+  document.getElementById("pdfBtn").addEventListener("click",function(){window.print()});
+  document.querySelectorAll("#steps li").forEach(function(li){li.className="done";li.querySelector(".dot").innerHTML="&#10003;"});
+  document.getElementById("mBar").style.width="100%";document.getElementById("mCount").textContent="Done";
+  window.scrollTo({top:0});var t=document.getElementById("stepTitle");if(t)t.focus({preventScroll:true});
+}
+
+function printHTML(data){
+  var h='<h1>Portfolio Website Questionnaire</h1><p class="meta">'+esc(CONFIG.studio)+' &middot; '+new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+'</p>';
+  data.forEach(function(s){
+    h+='<h2>'+esc(s.title)+'</h2>';
+    s.items.forEach(function(i){h+='<div class="qa"><b>'+esc(i.key)+'</b><div'+(i.value?'':' class="empty"')+'>'+esc(i.value||"Not answered")+'</div></div>'});
+  });
+  return h;
+}
+
+/* ---- start ---- */
+load();
+renderStep();
+</script>
+</body>
+</html>
